@@ -49,8 +49,14 @@ app.get('/', (request, response) => {
 
   app.post("/api/persons", (request, response) => {
     const newId = Math.floor(Math.random()*10000)
+    // let nameAlreadyExist = persons.findIndex(p => p.name === request.body.name) //returns -1 if person is not found  //better code with .some
 
-    if (request.body.name === "" && request.body.number === "") {
+    if (persons.some(e => e.name == request.body.name)) {  //if in persons array is SOME (at least 1) name that is == to req.body.name then this is true
+      return response.status(400).json({
+        error: "Name must be unique"
+      })
+    }
+    if (request.body.name === "" || request.body.number === "") {
       return response.status(400).json({
         error: "Number and name should be included"
       })
