@@ -3,11 +3,12 @@
 */
 
 const express = require("express");  //adding express
+const { response } = require("express");
 const app = express()                // create express aplication
 
 app.use(express.json())                 //JSON parser
 
-const persons = [
+let persons = [
     { name: 'Arto Hellas', number: '040-123456', id:1 },
     { name: 'Ada Lovelace', number: '39-44-5323523', id:2 },
     { name: 'Dan Abramov', number: '12-43-234345', id:3 },
@@ -37,6 +38,31 @@ app.get('/', (request, response) => {
         response.json(pers)
       }
 
+  })
+
+  app.delete("/api/persons/:id", (request, response) => {
+    const id = Number(request.params.id)
+    console.log(id)
+    persons = persons.filter(p => p.id !== id)    // FILTER PERSONS BASED ON ID
+    response.status(204).end()
+  })
+
+  app.post("/api/persons", (request, response) => {
+    const newId = Math.floor(Math.random()*10000)
+
+    if (request.body.name === "" && request.body.number === "") {
+      return response.status(400).json({
+        error: "Number and name should be included"
+      })
+    }
+
+    const newPerson = {
+      name: request.body.name,
+      number: request.body.number,
+      id: newId
+    }
+    persons = persons.concat(newPerson)
+    response.json(persons)
   })
 
 const PORT = 3001
