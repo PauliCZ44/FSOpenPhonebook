@@ -2,9 +2,10 @@ const express = require("express");  //adding express
 const { response } = require("express");
 const app = express()                // create express aplication
 const morgan = require('morgan')    //morgan logging api
-//morgan('tiny');   //Using a predefined format string 
+const cors = require('cors')
 
 
+app.use(cors())
 
 app.use(express.json())                 //JSON parser - must be declared before all .get / .post etc.
 
