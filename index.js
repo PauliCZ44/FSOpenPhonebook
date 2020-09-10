@@ -8,7 +8,7 @@ const cors = require('cors')
 app.use(cors())
 
 app.use(express.json())                 //JSON parser - must be declared before all .get / .post etc.
-
+app.use(express.static('build'))
 //define my token for name and number logging
 morgan.token('nameAndNumber', function (req, res) { return (
   JSON.stringify({
