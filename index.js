@@ -1,9 +1,10 @@
+require('dotenv').config()
 const express = require("express");  //adding express
 const { response } = require("express");
 const app = express()                // create express aplication
 const morgan = require('morgan')    //morgan logging api
 const cors = require('cors')
-
+const Person = require('./models/person');
 
 app.use(cors())
 
@@ -39,7 +40,12 @@ app.get('/', (request, response) => {
   })
 
 app.get('/api/persons', (request, response) => {
-  response.json(persons)
+  //response.json(persons)
+  Person.find({}).then(person=> {
+    response.json(person)
+
+  })
+
 })
 
 app.get('/info', (request, response) => {
@@ -67,7 +73,7 @@ app.delete("/api/persons/:id", (request, response) => {
 })
 
 app.post("/api/persons", (request, response) => {
-  const newId = Math.floor(Math.random()*10000)
+ // const newId = Math.floor(Math.random()*10000)
   // let nameAlreadyExist = persons.findIndex(p => p.name === request.body.name) //returns -1 if person is not found  //better code with .some
 
   if (persons.some(e => e.name == request.body.name)) {  //if in persons array is SOME (at least 1) name that is == to req.body.name then this is true
@@ -81,13 +87,17 @@ app.post("/api/persons", (request, response) => {
     })
   }
 
-  const newPerson = {
+  const newPerson = new Person({
     name: request.body.name,
-    number: request.body.number,
-    id: newId
-  }
+    number: request.body.number
+  })
   persons = persons.concat(newPerson)
-  response.status(201).json(persons)
+
+  newPerson.save().then(savedPerson => {
+    response.status(201).json(persons)
+  })
+
+ // response.status(201)
 })
 
 const unknownEndpoint = (request, response, next) => {
