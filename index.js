@@ -1,10 +1,10 @@
-require('dotenv').config()
+require('dotenv').config()            //export ENV library
 const express = require("express");  //adding express
 const { response } = require("express");
 const app = express()                // create express aplication
 const morgan = require('morgan')    //morgan logging api
 const cors = require('cors')
-const Person = require('./models/person');
+const Person = require('./models/person');    //export module
 
 app.use(cors())
 
@@ -43,9 +43,7 @@ app.get('/api/persons', (request, response) => {
   //response.json(persons)
   Person.find({}).then(person=> {
     response.json(person)
-
   })
-
 })
 
 app.get('/info', (request, response) => {
@@ -62,7 +60,6 @@ app.get('/api/persons/:id', (request, response) => {
     } else {
       response.json(pers)
     }
-
 })
 
 app.delete("/api/persons/:id", (request, response) => {
@@ -94,7 +91,7 @@ app.post("/api/persons", (request, response) => {
   persons = persons.concat(newPerson)
 
   newPerson.save().then(savedPerson => {
-    response.status(201).json(persons)
+    response.status(201).json(persons)     //response is made with array of persons - all persons, newPerson included
   })
 
  // response.status(201)
