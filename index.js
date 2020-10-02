@@ -46,12 +46,16 @@ app.get('/api/persons', (request, response) => {
   })
 })
 
-app.get('/info', (request, response) => {
+app.get('/info', (req, res, next) => {
   const date = new Date()
-  response.send(`<p>Phonebook has info fo ${persons.length} people<p>  <p>${date}<p>  `)
-
+  Person.count({})
+  .then(result => {
+    const status =  `<p>Phonebook has info about ${persons.length} people<p>  <p>${date}<p>  `
+    res.send(status);
+  })
+  .catch(error => next(error));
+  //change to  Person.count({})
 })
-
 app.get('/api/persons/:id', (request, response, next) => {
   Person.findById(request.params.id)
   .then( pers => {
