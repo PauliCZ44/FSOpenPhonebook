@@ -49,6 +49,7 @@ app.get('/api/persons', (request, response) => {
 app.get('/info', (request, response) => {
   const date = new Date()
   response.send(`<p>Phonebook has info fo ${persons.length} people<p>  <p>${date}<p>  `)
+
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
@@ -110,6 +111,18 @@ const unknownEndpoint = (request, response, next) => {
   response.status(404).send({ error: 'Unknown endpoint' })
 }
 app.use(unknownEndpoint)
+
+const errorHandler = (error, request, response, next) => {
+  console.error(error.message)
+
+  if (error.name === 'CastError') {
+    return response.status(400).send({ error: 'malformatted id' })
+  } 
+
+  next(error)
+}
+
+app.use(errorHandler)
 
 
 
