@@ -51,23 +51,32 @@ app.get('/info', (request, response) => {
   response.send(`<p>Phonebook has info fo ${persons.length} people<p>  <p>${date}<p>  `)
 })
 
-app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id)
-    console.log(id)
-    const pers = persons.find(p => p.id == id)    // try to find a person based on id in request
+app.get('/api/persons/:id', (request, response, next) => {
+  Person.findById(request.params.id)
+  .then( pers => {
     if (!pers) {
-        response.status(404).end(`The id of "${id}" does not exists`)
-    } else {
-      response.json(pers)
-    }
+      response.status(404).end(`The id of "${id}" does not exists`)
+  } else {
+    response.json(pers)
+  }
+  })
+  .catch(error => next(error))
+    const id = request.params.id
+    const pers = persons.find(p => p.id == id)    // try to find a person based on id in request
 })
 
-app.delete("/api/persons/:id", (request, response) => {
-  const id = Number(request.params.id)
-  console.log(id)
+app.delete('/api/persons/:id', (req, res, next) => {
+  const id = req.params.id
+  console.log("id is", id)
+  Person.findByIdAndRemove(req.params.id).then(result => {
+    res.status(204).end()
+  })
+  .catch(error => next(error))
   persons = persons.filter(p => p.id !== id)    // FILTER PERSONS BASED ON ID
-  response.status(204).end()
+  res.status(204).end()
 })
+
+
 
 app.post("/api/persons", (request, response) => {
  // const newId = Math.floor(Math.random()*10000)

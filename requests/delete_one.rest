@@ -1,1 +1,1 @@
-DELETE https://mysterious-plains-93352.herokuapp.com/api/persons/5626
+DELETE http://localhost:3001/api/persons/5f5f079e3c96ee1a805adaff

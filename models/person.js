@@ -17,4 +17,14 @@ const personsSchema = new mongoose.Schema({
     number: String   
 })
 
+//this is for transforming _id to id and also removes __v from DB.
+
+personsSchema.set('toJSON', {
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString();
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  }
+});
+
 module.exports = mongoose.model("Person", personsSchema)
