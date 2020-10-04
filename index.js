@@ -27,13 +27,10 @@ app.use(morgan(":method :url :status :res[content-length] - :response-time ms :n
   skip: function (req, res) { return res.statusCode !== 201 }
 }))
 
+let persons = []
 
-let persons = [
-    { name: 'Arto Hellas', number: '040-123456', id:1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id:2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id:3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id:4 }
-  ]
+console.log(persons)
+
 //basic get command for simple route
 app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
@@ -50,7 +47,7 @@ app.get('/info', (req, res, next) => {
   const date = new Date()
   Person.count({})
   .then(result => {
-    const status =  `<p>Phonebook has info about ${persons.length} people<p>  <p>${date}<p>  `
+    const status =  `<p>Phonebook has info about ${result} people<p>  <p>${date}<p>`
     res.send(status);
   })
   .catch(error => next(error));
@@ -98,7 +95,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 })
 
 
-app.post("/api/persons", (request, response) => {
+app.post("/api/persons", (request, response, next) => {
  // const newId = Math.floor(Math.random()*10000)
   // let nameAlreadyExist = persons.findIndex(p => p.name === request.body.name) //returns -1 if person is not found  //better code with .some
 
@@ -118,13 +115,22 @@ app.post("/api/persons", (request, response) => {
     number: request.body.number
   })
   persons = persons.concat(newPerson)
+  console.log("new array is",  newPerson)
 
-  newPerson.save().then(savedPerson => {
-    response.status(201).json(persons)     //response is made with array of persons - all persons, newPerson included
+  newPerson
+  .save()
+  .then(savedPerson => {
+    console.log("saved person!", savedPerson.toJSON())
+    response.json(savedPerson.toJSON());  //response is made with array of persons - all persons, newPerson included
+    console.log("saved person END!")
   })
+  .catch(error => next(error));
+
 
  // response.status(201)
-})
+ })
+
+
 
 const unknownEndpoint = (request, response, next) => {
   response.status(404).send({ error: 'Unknown endpoint' })
