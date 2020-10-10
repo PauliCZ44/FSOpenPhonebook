@@ -117,11 +117,11 @@ app.post("/api/persons", (request, response, next) => {
 
   newPerson
   .save()
-  .then(savedPerson => {
-    response.json(savedPerson.toJSON());  //response is made with only 1 person. Frontend will maek concat to persons array
-   //console.log("saved person END!")
+  .then(savedPerson =>  savedPerson.toJSON())  //response is made with only 1 person. Frontend will maek concat to persons array
+  .then(savedAndFormattedPerson => {
+    response.json(savedAndFormattedPerson)
   })
-  .catch(error => next(error));
+  .catch(error => next(error))
  })
 
 
@@ -136,7 +136,9 @@ const errorHandler = (error, request, response, next) => {
 
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
-  } 
+  }  else if (error.name === 'ValidationError') {
+    return response.status(400).json({ error: error.message })
+  }
 
   next(error)
 }
