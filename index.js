@@ -29,8 +29,6 @@ app.use(morgan(":method :url :status :res[content-length] - :response-time ms :n
 
 let persons = []
 
-console.log(persons)
-
 //basic get command for simple route
 app.get('/', (request, response) => {
     response.send('<h1>Hello World!</h1>')
@@ -120,14 +118,10 @@ app.post("/api/persons", (request, response, next) => {
   newPerson
   .save()
   .then(savedPerson => {
-    console.log("saved person!", savedPerson.toJSON())
-    response.json(savedPerson.toJSON());  //response is made with array of persons - all persons, newPerson included
-    console.log("saved person END!")
+    response.json(savedPerson.toJSON());  //response is made with only 1 person. Frontend will maek concat to persons array
+   //console.log("saved person END!")
   })
   .catch(error => next(error));
-
-
- // response.status(201)
  })
 
 
